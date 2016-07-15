@@ -46,7 +46,9 @@ To test if there were significant differences between microsites for the insect 
 ![](./mnp.JPG)
 
 ```{r, GLMM}
-#load data ####
+#load primary data ####
+primary<-read.csv("MNP.diversity.csv")
+str(primary)
 
 #test-normality ####
 
@@ -59,6 +61,9 @@ To test if there were significant differences between microsites for the insect 
 The RII effect size estimates were analyzed with a boot-strapped one-way t-test (999 iterations) that was then compared to a normal distribution with a mean of 0.
 ``` {r, effect sizes}
 #RII effect sizes calculated a priori
+#load derived data
+derived<-read.csv("MNP.effectsizes.csv")
+str(derived)
 #Bootstrapped t-test for diff from 0
 
 ```
@@ -69,10 +74,10 @@ we examined compositional differences in the insect communities between shrub an
 #RDA ####
 
 #ANOVA ####
-#A two-way crossed-factor ANOVA with permu- tation tests was used to test for differences in arthropod commu- nity structure between shrub and open microsites
+#A two-way crossed-factor ANOVA with permutation tests was used to test for differences in arthropod community structure between shrub and open microsites
 
 #ISA ####
-#An Indicator Species Analysis (ISA) was also used to explore whether certain species were more strongly indicative of either of the two microsite classifications tested and was per- formed with the ‘indval’ function (package: ‘indicspecies’) in R.
+#An Indicator Species Analysis (ISA) was also used to explore whether certain species were more strongly indicative of either of the two microsite classifications tested and was performed with the ‘indval’ function (package: ‘indicspecies’).
 
 
 ```
