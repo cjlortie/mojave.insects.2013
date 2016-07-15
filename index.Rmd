@@ -21,8 +21,8 @@ Shrub influences on insect biodiversity communities in Mojave National Preserve 
 ###Field methods
 Insect samples were collected at Kelso dunes over a nine-day period between April 24th and May 2nd, 2013. Insects were sampled daily using pan traps (approximately 18 cm in diameter) set at ground-level along an east-west axis parallel to Kelso Dunes. Thirty pairs of pan traps were set along two parallel 45 m transects (transects were 10 m apart) with alternating blue, yellow, and white traps approximately every 3 m using the NSERC-CANPOLIN protocol (http://www.uoguelph.ca/canpolin). Pan traps were paired so that each replicate had one pan trap under the southern portion of a L. tridentata canopy, halfway between the base of the shrub and the drip-line, and within a patch of annual plants. The other pan traps were deployed 2 m south of each paired shrub in an adjacent open microsite, also with annual plants present (see Appendix A; Fig. A2). Open microsites were located two metres from the drip-line of shrubs because this was on average the maximum distance possible without being within a two metre radius of another shrub (Ruttan pers. obs). Pan traps were half-filled with a solution of soapy water prepared by mixing five drops of unscented dish detergent per litre of water (for protocol, see: http://www.uoguelph.ca/canpolin). Pan traps were set out by 9:00 a.m. and collected at 5:00 p.m. daily targeting typical peak insect activity (http://www.uoguelph.ca/canpolin). 
 
-```{r library setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
 #library loads ####
 library(dplyr)
 library(lme4)
@@ -45,7 +45,7 @@ se <- function(x) sd(x)/sqrt(length(x)) ## SE
 To test if there were significant differences between microsites for the insect community, a Generalized Linear Mixed Model (GLMM; function, glmer, package: lme4) was fitted with microsite as the predictor variable and insect abundance, family richness and Simpson’s diversity each as response variables. Census day and pan trap colour were coded as random effects for these analyses to account for possible temporal autocorrelation and colour-specific differences in pollinator attraction. We determined whether microsite had a significant ef- fect on insect abundance, richness, and Simpson’s diversity by comparing our models to one with the microsite factor removed (intercept-only model) and calculating likelihood ratio tests with a chi-square approximation.
 ![](./mnp.JPG)
 
-```{r, GLMM, include=FALSE}
+```{r, GLMM}
 #load data ####
 
 #test-normality ####
@@ -57,7 +57,7 @@ To test if there were significant differences between microsites for the insect 
 
 ###Effect-size analyses
 The RII effect size estimates were analyzed with a boot-strapped one-way t-test (999 iterations) that was then compared to a normal distribution with a mean of 0.
-``` {r, effect sizes, include=TRUE}
+``` {r, effect sizes}
 #RII effect sizes calculated a priori
 #Bootstrapped t-test for diff from 0
 
@@ -65,7 +65,7 @@ The RII effect size estimates were analyzed with a boot-strapped one-way t-test 
 
 ###Ordination & insect community difference analyses
 we examined compositional differences in the insect communities between shrub and open microsites using a Redun- dancy Analysis (RDA; ‘rda’ function, ‘vegan’ package). The RDA was performed on family abundance data that was Hellinger trans- formed to lower the weight of rare families (Legendre and Gallagher, 2001). 
-```{r, community analyses, include=FALSE}
+```{r, community analyses}
 #RDA ####
 
 #ANOVA ####
@@ -80,7 +80,7 @@ we examined compositional differences in the insect communities between shrub an
 ###Environmental influences on insects
 We tested how the abiotic differences between microsites influenced the insect community by fitting linear regressions with daily average temperature ( C) and relative humidity (%RH) be- tween 9 a.m. and 5 p.m. as the predictor variables and the daily average insect abundance and richness each as response variables. Temperature and relative humidity values were averaged for each census day and by microsite (shrub/open).
 
-```{r, environmental drives, include=FALSE}
+```{r, environmental drives}
 #linear regressions temp & RH ####
 
 ```
@@ -88,7 +88,7 @@ We tested how the abiotic differences between microsites influenced the insect c
 ###Bees-only analyses
 As bees are the primary pollinators in the ecosystem, the relative abundance of bees versus non-bee insects was compared between shrub and open microsites. The data were non-normally distributed (Shapiro-Wilk; p 1⁄4 0.911) and were log transformed to improve normality. To test if shrub microsites had an effect on the relative abundance of bees, an Analysis of Variance (ANOVA) was fitted with microclimate as the predictor variable and bee relative abundance as the response variable.
 
-```{r, bee analyses, include=FALSE}
+```{r, bee analyses}
 #bee normality ####
 
 #ANOVA for bees ####

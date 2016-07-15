@@ -1,0 +1,12 @@
+base
+dplyr
+Matrix
+lme4
+lattice
+RColorBrewer
+latticeExtra
+estimability
+lsmeans
+permute
+vegan
+indicspecies
