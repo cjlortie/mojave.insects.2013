@@ -42,16 +42,21 @@ se <- function(x) sd(x)/sqrt(length(x)) ## SE
 ```
 
 ###GLMM primary data
-To test if there were significant differences between microsites for the insect community, a Generalized Linear Mixed Model (GLMM; function, glmer, package: lme4) was fitted with microsite as the predictor variable and insect abundance, family richness and Simpson’s diversity each as response variables. Census day and pan trap colour were coded as random effects for these analyses to account for possible temporal autocorrelation and colour-specific differences in pollinator attraction. We determined whether microsite had a significant ef- fect on insect abundance, richness, and Simpson’s diversity by comparing our models to one with the microsite factor removed (intercept-only model) and calculating likelihood ratio tests with a chi-square approximation.
+To test if there were significant differences between microsites for the insect community, a Generalized Linear Mixed Model (GLMM; function, glmer, package: lme4) was fitted with microsite as the predictor variable and insect abundance, family richness and Simpson’s diversity each as response variables. Census day and pan trap colour were coded as random effects for these analyses to account for possible temporal autocorrelation and colour-specific differences in pollinator attraction. We determined whether microsite had a significant effect on insect abundance, richness, and Simpson’s diversity by comparing our models to one with the microsite factor removed (intercept-only model) and calculating likelihood ratio tests with a chi-square approximation.
 ![](./mnp.JPG)
 
 ```{r, GLMM}
-#load primary data ####
+#load primary plant & insect data ####
+#plant dataset here contrasting shrub-open
+
+#primary insect data includes only abundance
 primary<-read.csv("MNP.diversity.csv")
 str(primary)
 
-#test-normality ####
-
+#EDA & test-normality ####
+plot(total.abundance~microsite, data=primary)
+histogram(~ total.abundance | microsite + pan.colour, data=primary)
+shapiro.test(primary$total.abundance)
 #GLMM primary diversity data ####
 
 
