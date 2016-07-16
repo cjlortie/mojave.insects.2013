@@ -11,7 +11,7 @@ output:
   pdf_document:
     toc: yes
 ---
-###Hypothesis: insect community in Mojave
+###Hypothesis: shrubs ~ insect community in deserts
 Shrub influences on insect biodiversity communities in Mojave National Preserve examined by Ally Ruttan in 2013. The hypothesis tested is that shrubs facilitate not only other plants but insects within region. Pan traps were used to assay insect diversity patterns in the Mojave in 2013 under shrubs and in paired, adjacent microsites.  
 
 ![](./kelso.JPG)
@@ -45,35 +45,51 @@ se <- function(x) sd(x)/sqrt(length(x)) ## SE
 To test if there were significant differences between microsites for the insect community, a Generalized Linear Mixed Model (GLMM; function, glmer, package: lme4) was fitted with microsite as the predictor variable and insect abundance, family richness and Simpson’s diversity each as response variables. Census day and pan trap colour were coded as random effects for these analyses to account for possible temporal autocorrelation and colour-specific differences in pollinator attraction. We determined whether microsite had a significant effect on insect abundance, richness, and Simpson’s diversity by comparing our models to one with the microsite factor removed (intercept-only model) and calculating likelihood ratio tests with a chi-square approximation.
 ![](./mnp.JPG)
 
-```{r, GLMM}
-#load primary plant & insect data ####
-#plant dataset here contrasting shrub-open
+```{r, plants}
+#Plant-plant association patterns ####
+#EDA plants ####
 
-#primary insect data includes only abundance
+#GLM plants ####
+
+```
+
+```{r, GLMM insects}
+#primary insect data csv includes only abundance
 primary<-read.csv("MNP.diversity.csv")
 str(primary)
 
-#EDA & test-normality ####
+#EDA insect abundances ####
 plot(total.abundance~microsite, data=primary)
 histogram(~ total.abundance | microsite + pan.colour, data=primary)
 densityplot(~total.abundance | microsite, group = pan.colour, data = primary)
 shapiro.test(primary$total.abundance)
-#GLMM primary diversity data ####
-#abundance of insects totals
+
+#GLMM insect total abundances ####
 m1<-glmer(total.abundance ~ microsite + (1|pan.colour) + (1|census), family=poisson, data=primary)
 summary(m1)
 anova(m1, test="Chisq")
 
+#EDA family richness ####
+derived<-read.csv("MNP.effectsizes.csv")
+str(derived)
+
+#GLMM insect family richness ####
+
+#EDA Simpsons diversity ####
+
+#GLMM Simpsons diversty ####
+
 ```
 
-###Effect-size analyses
+###Effect-size and derived analyses
 The RII effect size estimates were analyzed with a boot-strapped one-way t-test (999 iterations) that was then compared to a normal distribution with a mean of 0.
 ``` {r, effect sizes}
 #RII effect sizes calculated a priori
 #load derived data
-derived<-read.csv("MNP.effectsizes.csv")
-str(derived)
-#Bootstrapped t-test for diff from 0
+#derived<-read.csv("MNP.effectsizes.csv")
+#str(derived)
+
+#Bootstrapped t-test for diff from 0 for Rii
 
 ```
 
