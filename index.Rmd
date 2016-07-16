@@ -56,9 +56,13 @@ str(primary)
 #EDA & test-normality ####
 plot(total.abundance~microsite, data=primary)
 histogram(~ total.abundance | microsite + pan.colour, data=primary)
+densityplot(~total.abundance | microsite, group = pan.colour, data = primary)
 shapiro.test(primary$total.abundance)
 #GLMM primary diversity data ####
-
+#abundance of insects totals
+m1<-glmer(total.abundance ~ microsite + (1|pan.colour) + (1|census), family=poisson, data=primary)
+summary(m1)
+anova(m1, test="Chisq")
 
 ```
 
