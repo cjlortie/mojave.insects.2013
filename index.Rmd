@@ -54,11 +54,11 @@ To test if there were significant differences between microsites for the insect 
 ```
 
 ```{r, GLMM insects}
-#primary insect data csv includes only abundance
+#read data for most analyses ####
 primary<-read.csv("MNP.insect.compiled.csv")
 str(primary)
 
-#EDA insect abundances ####
+#EDA insect total abundances ####
 plot(total.abundance~microsite, data=primary)
 histogram(~ total.abundance | microsite + pan.colour, data=primary)
 densityplot(~total.abundance | microsite, group = pan.colour, data = primary)
@@ -70,13 +70,23 @@ summary(m1)
 anova(m1, test="Chisq")
 
 #EDA insect family richness ####
-
+plot(Family.Richness~microsite, data=primary)
+histogram(~ Family.Richness | microsite + pan.colour, data=primary)
+densityplot(~Family.Richness | microsite, group = pan.colour, data = primary)
+shapiro.test(primary$Family.Richness)
 
 #GLMM insect family richness ####
+m2<-glmer(Family.Richness ~ microsite + (1|pan.colour) + (1|census), family=poisson, data=primary)
+summary(m2)
+anova(m2, test="Chisq")
 
 #EDA Simpsons diversity ####
+plot(Simpsons.Diversity~microsite, data=primary)
+histogram(~ Simpsons.Diversity | microsite + pan.colour, data=primary)
+densityplot(~Simpsons.Diversity | microsite, group = pan.colour, data = primary)
+shapiro.test(primary$Simpsons.Diversity)
 
-#GLMM Simpsons diversty ####
+#GLMM Simpsons diversity ####
 
 ```
 
