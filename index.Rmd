@@ -31,6 +31,7 @@ library(latticeExtra)
 library(lsmeans)
 library(vegan)
 library(indicspecies)
+select <- dplyr::select
 
 ##load functions ####
 error.bar <- function(x, y, upper, lower=upper, length=0,...){
@@ -54,7 +55,7 @@ To test if there were significant differences between microsites for the insect 
 ```
 
 ```{r, GLMM insects}
-#read data for most analyses ####
+#read data for most insect community analyses ####
 primary<-read.csv("MNP.insect.compiled.csv")
 str(primary)
 
@@ -66,6 +67,7 @@ shapiro.test(primary$total.abundance)
 
 #GLMM insect total abundances ####
 m1<-glmer(total.abundance ~ microsite + (1|pan.colour) + (1|census), family=poisson, data=primary)
+plot(m1)
 summary(m1)
 anova(m1, test="Chisq")
 
@@ -77,6 +79,7 @@ shapiro.test(primary$Family.Richness)
 
 #GLMM insect family richness ####
 m2<-glmer(Family.Richness ~ microsite + (1|pan.colour) + (1|census), family=poisson, data=primary)
+plot(m2)
 summary(m2)
 anova(m2, test="Chisq")
 
@@ -86,7 +89,16 @@ histogram(~ Simpsons.Diversity | microsite + pan.colour, data=primary)
 densityplot(~Simpsons.Diversity | microsite, group = pan.colour, data = primary)
 shapiro.test(primary$Simpsons.Diversity)
 
+#primary <-primary %>% 
+  #mutate(logged.simpsons = log(Simpsons.Diversity))
+#added column logged.Simpsons and replaced #NA with blanks
+
 #GLMM Simpsons diversity ####
+#m3<-glmer(logged.Simpsons ~ microsite + (1|pan.colour) + (1|census), family=gaussian, data=primary)
+m3<-lmer(logged.Simpsons ~ microsite + (1|pan.colour) +(1|census), data=primary)
+plot(m3)
+summary(m3) 
+anova(m3, test="Chisq")
 
 ```
 
