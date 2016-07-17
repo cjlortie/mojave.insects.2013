@@ -55,7 +55,7 @@ To test if there were significant differences between microsites for the insect 
 
 ```{r, GLMM insects}
 #primary insect data csv includes only abundance
-primary<-read.csv("MNP.diversity.csv")
+primary<-read.csv("MNP.insect.compiled.csv")
 str(primary)
 
 #EDA insect abundances ####
@@ -69,9 +69,8 @@ m1<-glmer(total.abundance ~ microsite + (1|pan.colour) + (1|census), family=pois
 summary(m1)
 anova(m1, test="Chisq")
 
-#EDA family richness ####
-derived<-read.csv("MNP.effectsizes.csv")
-str(derived)
+#EDA insect family richness ####
+
 
 #GLMM insect family richness ####
 
@@ -85,9 +84,8 @@ str(derived)
 The RII effect size estimates were analyzed with a boot-strapped one-way t-test (999 iterations) that was then compared to a normal distribution with a mean of 0.
 ``` {r, effect sizes}
 #RII effect sizes calculated a priori
-#load derived data
-#derived<-read.csv("MNP.effectsizes.csv")
-#str(derived)
+#EDA derived data
+
 
 #Bootstrapped t-test for diff from 0 for Rii
 
