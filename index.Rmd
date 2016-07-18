@@ -69,7 +69,15 @@ shapiro.test(primary$total.abundance)
 m1<-glmer(total.abundance ~ microsite + (1|pan.colour) + (1|census), family=poisson, data=primary)
 plot(m1)
 summary(m1)
-anova(m1, test="Chisq")
+#anova(m1, test="Chisq") #anova of glmer with random cannot process
+
+m1.null <- glmer(total.abundance ~ 1 + (1|pan.colour) + (1|census), family=poisson, data=primary)
+
+#even better code
+#m1.null<-update(m1, total.abundance ~ 1 + .) #does not work
+
+fit <- anova(m1,m1.null, test="Chisq")
+summary(fit)
 
 #EDA insect family richness ####
 plot(Family.Richness~microsite, data=primary)
@@ -81,7 +89,11 @@ shapiro.test(primary$Family.Richness)
 m2<-glmer(Family.Richness ~ microsite + (1|pan.colour) + (1|census), family=poisson, data=primary)
 plot(m2)
 summary(m2)
-anova(m2, test="Chisq")
+#anova(m2, test="Chisq")
+
+m2.null<-glmer(Family.Richness ~ 1 + (1|pan.colour) + (1|census), family=poisson, data=primary)
+fit<-anova(m2, m2.null, test="Chisq")
+summary(fit)
 
 #EDA Simpsons diversity ####
 plot(Simpsons.Diversity~microsite, data=primary)
@@ -98,7 +110,14 @@ shapiro.test(primary$Simpsons.Diversity)
 m3<-lmer(logged.Simpsons ~ microsite + (1|pan.colour) +(1|census), data=primary)
 plot(m3)
 summary(m3) 
-anova(m3, test="Chisq")
+#anova(m3, test="Chisq")
+
+m3.null<-lmer(logged.Simpsons ~ 1 + (1|pan.colour) +(1|census), data=primary)
+fit<-anova(m3, m3.null, test="Chi-sq")
+summary(fit)
+
+#note could also use package lmerTest, outputs p-values without setting up dummy null model
+
 
 ```
 
