@@ -1,6 +1,6 @@
 ---
 title:
-author: "cjlortie"
+author: " alex filazzola & cjlortie"
 date: "July 2016"
 output:
   html_document:
@@ -14,7 +14,9 @@ output:
 ##Shrub-annual-insect facilitation
 
 ###Hypothesis: shrubs ~ insect communities 
-Shrub influences on insect biodiversity communities in Mojave National Preserve examined by Ally Ruttan in 2013. The hypothesis tested is that shrubs facilitate not only other plants but insects within region. Pan traps were used to assay insect diversity patterns in the Mojave in 2013 under shrubs and in paired, adjacent microsites.  
+Shrub influences on insect biodiversity communities in Mojave National Preserve examined by Ally Ruttan in 2013. The hypothesis tested is that shrubs facilitate not only other plants but insects within region. Pan traps were used to assay insect diversity patterns in the Mojave in 2013 under shrubs and in paired, adjacent microsites. 
+
+Contributions: Ally Ruttan collected all field data. Alex Filazzola did the majority of statistics and all research on appropriate tests. Chris Lortie participated in experimental design with Ally and code/statistics with Alex.
 
 ![](./kelso.JPG)
 
