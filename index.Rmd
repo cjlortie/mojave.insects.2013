@@ -301,12 +301,12 @@ out
 
 indicator.data <- read.table("data/ruttan.evenness.csv",header=T,sep=",")
 
-#Inidcator species analysis
+#Indicator species analysis
 micro <- rep(c("open","shrub"),270)
 groups <- c(micro)
 
-indval <- multipatt(indicator.data, groups, control=permControl(nperm=999))
-summary(indval)
+#indval <- multipatt(indicator.data, groups, control=permControl(nperm=999))
+#summary(indval)
 
 ```
 
