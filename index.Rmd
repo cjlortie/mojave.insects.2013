@@ -207,13 +207,106 @@ t.test(boot.mean$t, mu = 0)
 we examined compositional differences in the insect communities between shrub and open microsites using a Redun- dancy Analysis (RDA; ‘rda’ function, ‘vegan’ package). The RDA was performed on family abundance data that was Hellinger trans- formed to lower the weight of rare families (Legendre and Gallagher, 2001). 
 ```{r, community analyses}
 #RDA ####
+### RDA
+
+data.rda <- read.table("Ruttan\\ruttan.rda.data.csv", header=T,sep=",")
+data.rda[is.na(data.rda)] <- 0
+
+
+# Call Variables
+Resp <- data.rda[,5:56]
+Expl <- data.rda[,3:4]
+
+# Hellinger transformation --> Legendre and Gallagher 2001
+Respnorm <-decostand(Resp, method="hellinger")
+#Respnorm <-decostand(Resp, method="total")
+
+rda1 <- rda(Respnorm~ Expl$Micro  * Expl$Pan, scaling=1)
+
+par(mar=c(5.1,5.1,2.5,2.1))
+plot(rda1, display="lc", ylim=c(-0.3,0.25), xlim=c(-0.6,0.5))
+
+abu <- colSums(Respnorm)
+
+ordilabel(rda1, col = "red", dis = "sp", priority = abu)
+ordilabel(rda1, col = "blue", dis = "lc")
+
+
+Expl[539,1:2] # open white
+Expl[537,1:2] # open yellow
+Expl[535,1:2] # open blue
+Expl[536,1:2] # shrub blue
+Expl[538,1:2] # shrub yellow
+Expl[540,1:2] # shrub white
+
 
 #ANOVA ####
 #A two-way crossed-factor ANOVA with permutation tests was used to test for differences in arthropod community structure between shrub and open microsites
+### Unbalanced 2-way Anova using RDA
 
+Resp <- data.rda[,5:56]
+Expl <- data.rda[,3:4]
+
+n <- nrow(Resp)
+p <- ncol(Resp)
+
+# A = Micro
+# B = Pan
+
+A <- as.factor(Expl[,1])
+B <- as.factor(Expl[,2])
+
+ncol.A <- nlevels(A)-1
+ncol.B <- nlevels(B)-1
+ncol.int <- ncol.A * ncol.B
+model.mat <- model.matrix(~ A*B, contrasts=list(A="contr.helmert", B="contr.helmert"))[,-1]
+
+model.A <- as.matrix(model.mat[,1:ncol.A])
+model.B <- as.matrix(model.mat[,(ncol.A+1):(ncol.A+ncol.B)])
+model.int <- as.matrix(model.mat[,(ncol.A+ncol.B+1):ncol(model.mat)])
+
+# Test of factor A
+out.rda <- rda(Resp, model.A, cbind(model.B, model.int))
+int.out <- anova(out.rda, perm.max=(999+1), step=(999+1))
+out.A <- int.out[1,]
+
+# Test of factor B
+out.rda <- rda(Resp, model.B, cbind(model.A, model.int))
+int.out <- anova(out.rda, perm.max=(999+1), step=(999+1))
+out.B <- int.out[1,]
+
+# Test of interaction
+out.rda <- rda(Resp, model.int, cbind(model.A, model.B))
+int.out <- anova(out.rda, perm.max=(999+1), step=(999+1))
+out.AB <- int.out[1,]
+out.res <- int.out[2,]
+
+out <- rbind(out.A, out.B, out.AB, out.res)
+out$Var <- out$Var*(n-1)/out$Df
+rownames(out) <- c("Micro","Pan","Micro*Pan","Residuals")
+if(p == 1) {
+	out <- as.data.frame(cbind(out[,1:4], P.param, out[,5]))
+	colnames(out) <- c("Df","MeanSq","F-stat","N.perm","P.param","Pr(>F)")
+	} else {
+	colnames(out) <- c("Df","MeanSq","F-stat","N.perm","Pr(>F)")
+	}
+
+out <- list(Anova_unbalanced=out)
+class(out) <- "anova.unbalanced"
+out
+
+ 
 #ISA ####
 #An Indicator Species Analysis (ISA) was also used to explore whether certain species were more strongly indicative of either of the two microsite classifications tested and was performed with the ‘indval’ function (package: ‘indicspecies’).
 
+indicator.data <- read.table("Ruttan\\ruttan.evenness.csv",header=T,sep=",")
+
+#Inidcator species analysis
+micro <- rep(c("open","shrub"),270)
+groups <- c(micro)
+
+indval <- multipatt(indicator.data, groups, control=permControl(nperm=999))
+summary(indval)
 
 ```
 
