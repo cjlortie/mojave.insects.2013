@@ -49,7 +49,7 @@ se <- function(x) sd(x)/sqrt(length(x)) ## SE
 ```{r, plants}
 #Plant-plant association patterns ####
 #EDA plants ####
-plants<-read.csv("data\\MNP.plants.csv")
+plants<-read.csv("data/MNP.plants.csv")
 str(plants)
 plot(cover~microsite, data=plants)
 plot(richness~microsite, data=plants)
@@ -80,7 +80,7 @@ To test if there were significant differences between microsites for the insect 
 
 ```{r, GLMM insects}
 #read data for most insect community analyses ####
-primary<-read.csv("data\\MNP.insect.compiled.csv")
+primary<-read.csv("data/MNP.insect.compiled.csv")
 str(primary)
 
 #EDA insect total abundances ####
@@ -209,7 +209,7 @@ we examined compositional differences in the insect communities between shrub an
 #RDA ####
 ### RDA
 
-data.rda <- read.table("data\\ruttan.rda.data.csv", header=T,sep=",")
+data.rda <- read.table("data/ruttan.rda.data.csv", header=T,sep=",")
 data.rda[is.na(data.rda)] <- 0
 
 
@@ -299,7 +299,7 @@ out
 #ISA ####
 #An Indicator Species Analysis (ISA) was also used to explore whether certain species were more strongly indicative of either of the two microsite classifications tested and was performed with the ‘indval’ function (package: ‘indicspecies’).
 
-indicator.data <- read.table("data\\ruttan.evenness.csv",header=T,sep=",")
+indicator.data <- read.table("data/ruttan.evenness.csv",header=T,sep=",")
 
 #Inidcator species analysis
 micro <- rep(c("open","shrub"),270)
@@ -315,7 +315,7 @@ We tested how the abiotic differences between microsites influenced the insect c
 
 ```{r, environmental drives, fig.width=10}
 #two-tailed t-test temp shrub-open on insect abundance and richness####
-source('data\\hobo.data.R')
+source('data/hobo.data.R')
 
 
 m1 <- t.test(temp.avg~micro)
@@ -398,7 +398,7 @@ As bees are the primary pollinators in the ecosystem, the relative abundance of 
 
 ```{r, bee analyses}
 #bee normality ####
-data_ruttan <- read.table("Ruttan\\ruttan.bee.csv",header=T,sep=",")
+data_ruttan <- read.table("data/ruttan.bee.csv",header=T,sep=",")
 
 relabd <- data_ruttan$Relativeabd
 Micro <- data_ruttan$Micro
