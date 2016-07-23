@@ -181,7 +181,7 @@ lsmeans(m.rii.Simpsons, pairwise~pan.colour, adjust="tukey")
 
 #use boot libary
 #rii.abundance
-x<-as.numeric(rii$Rii.abundance)
+x<-as.numeric(rii$Rii.abundance) #for some reason need as.numeric for just rii.abundance
 mean.fun<-function(x,i){mean(x[i])}
 boot.mean<-boot(x, mean.fun, R=1000)
 plot(boot.mean)
