@@ -11,6 +11,8 @@ output:
   pdf_document:
     toc: yes
 ---
+##Shrub-annual-insect facilitation
+
 ###Hypothesis: shrubs ~ insect community in deserts
 Shrub influences on insect biodiversity communities in Mojave National Preserve examined by Ally Ruttan in 2013. The hypothesis tested is that shrubs facilitate not only other plants but insects within region. Pan traps were used to assay insect diversity patterns in the Mojave in 2013 under shrubs and in paired, adjacent microsites.  
 
@@ -31,6 +33,7 @@ library(latticeExtra)
 library(lsmeans)
 library(vegan)
 library(indicspecies)
+library(boot)
 select <- dplyr::select
 
 ##load functions ####
@@ -42,17 +45,38 @@ error.bar <- function(x, y, upper, lower=upper, length=0,...){
 se <- function(x) sd(x)/sqrt(length(x)) ## SE
 ```
 
-###GLMM primary data
-To test if there were significant differences between microsites for the insect community, a Generalized Linear Mixed Model (GLMM; function, glmer, package: lme4) was fitted with microsite as the predictor variable and insect abundance, family richness and Simpson’s diversity each as response variables. Census day and pan trap colour were coded as random effects for these analyses to account for possible temporal autocorrelation and colour-specific differences in pollinator attraction. We determined whether microsite had a significant effect on insect abundance, richness, and Simpson’s diversity by comparing our models to one with the microsite factor removed (intercept-only model) and calculating likelihood ratio tests with a chi-square approximation.
-![](./mnp.JPG)
-
+###Plant-plant interactions
 ```{r, plants}
 #Plant-plant association patterns ####
 #EDA plants ####
+plants<-read.csv("MNP.plants.csv")
+str(plants)
+plot(cover~microsite, data=plants)
+plot(richness~microsite, data=plants)
 
-#GLM plants ####
+#GLMM plants ####
+#cover (annuals)
+m.plant.cover<-lmer(cover~microsite * (1|shrub.species), data=plants)
+summary(m.plant.cover)
+m.plant.cover.null<-lmer(cover~1 * (1|shrub.species), data=plants)
+anova(m.plant.cover, m.plant.cover.null, test="Chisq")
+
+#richness (annuals)
+m.plant.richness<-glmer.nb(cover~microsite + (1|shrub.species), data=plants)
+summary(m.plant.richness)
+m.plant.richness<-glmer.nb(cover~microsite + (1|shrub.species), data=plants)
+m.plant.richness.null<-glmer.nb(cover~1 + (1|shrub.species), data=plants)
+anova(m.plant.richness, m.plant.richness.null, test="Chisq")
+
+#data viz (brief for plants)
+bwplot(cover~microsite | shrub.species, data=plants, ylab = "annual cover")
+bwplot(richness~microsite | shrub.species, data=plants, ylab = "annual cover")
 
 ```
+
+###Plant-insect interactions
+To test if there were significant differences between microsites for the insect community, a Generalized Linear Mixed Model (GLMM; function, glmer, package: lme4) was fitted with microsite as the predictor variable and insect abundance, family richness and Simpson’s diversity each as response variables. Census day and pan trap colour were coded as random effects for these analyses to account for possible temporal autocorrelation and colour-specific differences in pollinator attraction. We determined whether microsite had a significant effect on insect abundance, richness, and Simpson’s diversity by comparing our models to one with the microsite factor removed (intercept-only model) and calculating likelihood ratio tests with a chi-square approximation.
+![](./mnp.JPG)
 
 ```{r, GLMM insects}
 #read data for most insect community analyses ####
@@ -125,11 +149,60 @@ summary(fit)
 The RII effect size estimates were analyzed with a boot-strapped one-way t-test (999 iterations) that was then compared to a normal distribution with a mean of 0.
 ``` {r, effect sizes}
 #RII effect sizes calculated a priori
-#EDA derived data
+#EDA rii ####
+rii <-primary %>% na.omit(primary) #easy way to clean up primary
+str(rii) 
 
 
+boxplot(as.numeric(rii$Rii.abundance), xlab="rii abundance")
+barplot(rii$Rii.richness, xlab="rii richness")
+barplot(rii$Rii.Simpsons, xlab="rii richness")
+
+#rii.abundance
+t.test(as.numeric(rii$Rii.abundance), mu = 0)
+m.rii.abundance <-glm(as.numeric(Rii.abundance) ~ pan.colour, family = gaussian, data=rii)
+anova(m.rii.abundance, test="Chisq")
+lsmeans(m.rii.abundance, pairwise~pan.colour, adjust="tukey")
+
+#rii.richness
+t.test(rii$Rii.richness, mu = 0)
+m.rii.richness <-glm(Rii.richness ~ pan.colour, family = gaussian, data=rii)
+anova(m.rii.richness, test="Chisq")
+lsmeans(m.rii.richness, pairwise~pan.colour, adjust="tukey")
+
+#rii.simpsons
+t.test(rii$Rii.Simpsons, mu = 0)
+m.rii.Simpsons <-glm(Rii.Simpsons ~ pan.colour, family = gaussian, data=rii)
+anova(m.rii.Simpsons, test="Chisq")
+lsmeans(m.rii.Simpsons, pairwise~pan.colour, adjust="tukey")
 
 #Bootstrapped t-test for diff from 0 for Rii
+#source('/Permutation.rii.stats.r') #original formulation
+
+#use boot libary
+#rii.abundance
+x<-as.numeric(rii$Rii.abundance)
+mean.fun<-function(x,i){mean(x[i])}
+boot.mean<-boot(x, mean.fun, R=1000)
+plot(boot.mean)
+y<-boot.mean$t
+t.test(y, mu = 0)
+
+#rii.richness
+x<-rii$Rii.richness
+mean.fun<-function(x,i){mean(x[i])}
+boot.mean<-boot(x, mean.fun, R=1000)
+plot(boot.mean)
+y<-boot.mean$t
+t.test(y, mu = 0)
+
+#rii.simpsons
+x<-rii$Rii.richness
+mean.fun<-function(x,i){mean(x[i])}
+boot.mean<-boot(x, mean.fun, R=1000)
+plot(boot.mean)
+y<-boot.mean$t
+t.test(y, mu = 0)
 
 ```
 
@@ -151,7 +224,13 @@ we examined compositional differences in the insect communities between shrub an
 We tested how the abiotic differences between microsites influenced the insect community by fitting linear regressions with daily average temperature ( C) and relative humidity (%RH) be- tween 9 a.m. and 5 p.m. as the predictor variables and the daily average insect abundance and richness each as response variables. Temperature and relative humidity values were averaged for each census day and by microsite (shrub/open).
 
 ```{r, environmental drives}
-#linear regressions temp & RH ####
+#two-tailed t-test temp shrub-open on insect abundance and richness####
+
+
+#linear regions temp and RH ####
+
+
+
 
 ```
 
