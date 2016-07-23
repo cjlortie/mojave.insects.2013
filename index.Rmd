@@ -313,12 +313,81 @@ summary(indval)
 ###Environment~insects
 We tested how the abiotic differences between microsites influenced the insect community by fitting linear regressions with daily average temperature ( C) and relative humidity (%RH) be- tween 9 a.m. and 5 p.m. as the predictor variables and the daily average insect abundance and richness each as response variables. Temperature and relative humidity values were averaged for each census day and by microsite (shrub/open).
 
-```{r, environmental drives}
+```{r, environmental drives, fig.width=10}
 #two-tailed t-test temp shrub-open on insect abundance and richness####
+source('Ruttan\\hobo.data.R')
 
+
+m1 <- t.test(temp.avg~micro)
+m2 <- t.test(RH.avg~micro)
+m3 <- t.test(richness~micro)
+m4 <- t.test(abundance~micro)
+
+plot(RH.avg,richness)
+m1 <- lm(abundance~RH.avg)
+
+data2 <- data.frame(day,micro,temp.avg,RH.avg,richness,abundance, temp.se, RH.se, richness.se,abundance.se)
+
+shrubs <- subset(data2, micro=="shrub")
+opens <- subset(data2, micro=="open")
+
+plot(shrubs$RH.avg,shrubs$richness)
+
+
+par(mfrow=c(1,2))
+par(mar=c(4.5,4.5,.5,.5))
+plot(shrubs$temp.avg,shrubs$abundance, pch=19, cex=2, cex.axis=1.5, cex.lab=1.8, xlab="Daily Temperature", ylab="Insect Abundance", ylim=c(4,18))
+error.bar(shrubs$temp.avg,shrubs$abundance,shrubs$abundance.se, lwd=2)
+error.bar(opens$temp.avg,opens$abundance,opens$abundance.se, lwd=2)
+points(opens$temp.avg,opens$abundance, cex=2, pch=21, bg="White")
+
+
+
+par(mar=c(4.5,4.5,.5,.5))
+plot(shrubs$temp.avg,shrubs$richness, pch=19, cex=2, cex.axis=1.5, cex.lab=1.8, xlab="Daily Temperature", ylab="Insect richness", ylim=c(2,18))
+error.bar(shrubs$temp.avg,shrubs$richness,shrubs$richness.se, lwd=2)
+error.bar(opens$temp.avg,opens$richness,opens$richness.se, lwd=2)
+points(opens$temp.avg,opens$richness, cex=2, pch=21, bg="White")
+abline(m2, lwd=3, lty=2)
+
+
+
+par(mfrow=c(1,2))
+par(mar=c(4.5,4.5,.5,.5))
+plot(shrubs$RH.avg,shrubs$abundance, pch=19, cex=2, cex.axis=1.5, cex.lab=1.8, xlab="Daily Relative Humidity", ylab="Insect Abundance", ylim=c(4,18))
+error.bar(shrubs$RH.avg,shrubs$abundance,shrubs$abundance.se, lwd=2)
+error.bar(opens$RH.avg,opens$abundance,opens$abundance.se, lwd=2)
+points(opens$RH.avg,opens$abundance, cex=2, pch=21, bg="White")
+
+
+
+par(mar=c(4.5,4.5,.5,.5))
+plot(shrubs$RH.avg,shrubs$richness, pch=19, cex=2, cex.axis=1.5, cex.lab=1.8, xlab="Daily Relative Humidity", ylab="Insect richness", ylim=c(2,18))
+error.bar(shrubs$RH.avg,shrubs$richness,shrubs$richness.se, lwd=2)
+error.bar(opens$RH.avg,opens$richness,opens$richness.se, lwd=2)
+points(opens$RH.avg,opens$richness, cex=2, pch=21, bg="White")
 
 #linear regressions of temp and RH on insect communities####
 
+# temperature for shrub and open ####
+m1 <- lm(abundance~temp.avg, data=shrubs)
+summary(m1)
+m2 <- lm(richness~temp.avg, data=shrubs)## sig
+summary(m2)
+m3 <- lm(abundance~temp.avg, data=opens)
+summary(m3)
+m4 <- lm(richness~temp.avg, data=opens) 
+summary(m4)
+
+# relative humidity ####
+m1 <- lm(abundance~RH.avg, data=shrubs)
+summary(m1)
+m2 <- lm(richness~RH.avg, data=shrubs)
+summary(m2)
+m3 <- lm(abundance~RH.avg, data=opens)
+summary(m3)
+m4 <- lm(richness~RH.avg, data=opens)
+summary(m4)
 
 
 
@@ -329,7 +398,18 @@ As bees are the primary pollinators in the ecosystem, the relative abundance of 
 
 ```{r, bee analyses}
 #bee normality ####
+data_ruttan <- read.table("Ruttan\\ruttan.bee.csv",header=T,sep=",")
+
+relabd <- data_ruttan$Relativeabd
+Micro <- data_ruttan$Micro
+
+logabd <- log(relabd)
+logabd[logabd == -Inf] <- 0
+
+bartlett.test(logabd,Micro)
 
 #ANOVA for bees ####
 
+m1 <- aov(logabd ~ Micro * Pollinat, data=data_ruttan)
+TukeyHSD(m1)
 ```
