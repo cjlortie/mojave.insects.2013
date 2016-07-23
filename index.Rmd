@@ -13,7 +13,7 @@ output:
 ---
 ##Shrub-annual-insect facilitation
 
-###Hypothesis: shrubs ~ insect community in deserts
+###Hypothesis: shrubs ~ insect communities 
 Shrub influences on insect biodiversity communities in Mojave National Preserve examined by Ally Ruttan in 2013. The hypothesis tested is that shrubs facilitate not only other plants but insects within region. Pan traps were used to assay insect diversity patterns in the Mojave in 2013 under shrubs and in paired, adjacent microsites.  
 
 ![](./kelso.JPG)
@@ -145,7 +145,7 @@ summary(fit)
 
 ```
 
-###Effect-size and derived analyses
+###Effect-size analyses
 The RII effect size estimates were analyzed with a boot-strapped one-way t-test (999 iterations) that was then compared to a normal distribution with a mean of 0.
 ``` {r, effect sizes}
 #RII effect sizes calculated a priori
@@ -154,7 +154,7 @@ rii <-primary %>% na.omit(primary) #easy way to clean up primary
 str(rii) 
 
 
-boxplot(as.numeric(rii$Rii.abundance), xlab="rii abundance")
+barplot(as.numeric(rii$Rii.abundance), xlab="rii abundance")
 barplot(rii$Rii.richness, xlab="rii richness")
 barplot(rii$Rii.Simpsons, xlab="rii richness")
 
@@ -185,28 +185,25 @@ x<-as.numeric(rii$Rii.abundance)
 mean.fun<-function(x,i){mean(x[i])}
 boot.mean<-boot(x, mean.fun, R=1000)
 plot(boot.mean)
-y<-boot.mean$t
-t.test(y, mu = 0)
+t.test(boot.mean$t, mu = 0)
 
 #rii.richness
 x<-rii$Rii.richness
 mean.fun<-function(x,i){mean(x[i])}
 boot.mean<-boot(x, mean.fun, R=1000)
 plot(boot.mean)
-y<-boot.mean$t
-t.test(y, mu = 0)
+t.test(boot.mean$t, mu = 0)
 
 #rii.simpsons
 x<-rii$Rii.richness
 mean.fun<-function(x,i){mean(x[i])}
 boot.mean<-boot(x, mean.fun, R=1000)
 plot(boot.mean)
-y<-boot.mean$t
-t.test(y, mu = 0)
+t.test(boot.mean$t, mu = 0)
 
 ```
 
-###Ordination & insect community difference analyses
+###Insect community differences
 we examined compositional differences in the insect communities between shrub and open microsites using a Redun- dancy Analysis (RDA; ‘rda’ function, ‘vegan’ package). The RDA was performed on family abundance data that was Hellinger trans- formed to lower the weight of rare families (Legendre and Gallagher, 2001). 
 ```{r, community analyses}
 #RDA ####
@@ -220,14 +217,14 @@ we examined compositional differences in the insect communities between shrub an
 
 ```
 
-###Environmental influences on insects
+###Environment~insects
 We tested how the abiotic differences between microsites influenced the insect community by fitting linear regressions with daily average temperature ( C) and relative humidity (%RH) be- tween 9 a.m. and 5 p.m. as the predictor variables and the daily average insect abundance and richness each as response variables. Temperature and relative humidity values were averaged for each census day and by microsite (shrub/open).
 
 ```{r, environmental drives}
 #two-tailed t-test temp shrub-open on insect abundance and richness####
 
 
-#linear regions temp and RH ####
+#linear regressions of temp and RH on insect communities####
 
 
 
